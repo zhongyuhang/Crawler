@@ -15,15 +15,16 @@ class CrawlerUtils(object):
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 Safari/537.36'
         ]
         self.proxy = "http://defi4.cijef.com.hk"
+        self.headers = {'headers': self.user_agent[random.randint(0, len(self.user_agent) - 1)]}
 
     @property
     def can_not_transfer_parameters(self):
         pass
 
-    def _random_user_agent(self):
-        return self.user_agent[random.randint(0, len(self.user_agent) - 1)]
+    def get(self, url):
+        r = requests.get(url, headers = self.headers)
+        return r
 
-    def get_response(self, url):
-        headers = {'user-agent': self._random_user_agent()}
-        r = requests.get(url, headers = headers)
+    def post(self, url, params):
+        r = requests.post(url, headers = self.headers, data = params)
         return r

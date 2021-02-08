@@ -44,7 +44,7 @@ def insert_novel(soup):
     global novel_id
     novel_type_id = get_novel_type_id(soup)
     novel_title = soup.find('h1').get_text()
-        # check if it is empty and print error
+    # check if it is empty and print error
     record = query_by_novel_title(novel_title)
     if not record:
         sql = "INSERT into `novel`(`novel_title`, `novel_type_id`) VALUES ('%s', %d)" % (novel_title, novel_type_id)
@@ -70,19 +70,19 @@ def get_detail_urls(url):
     return sorted(urls, key=lambda url:int(re.match('(\d+)', url)[0]))
 
 def save_detail(urls):
-    for url in urls:
-        r = requests.get("https://www.xbiquge.cc/book/4772/" + url)
-        soup = BeautifulSoup(r.content, 'html.parser')
-        novel_detail_title = soup.find('h1').get_text()
-        detail_body = soup.select("div#content")[0].get_text().replace("\xa0", "\n")
-        novel_detail_body = "".join(detail_body.split(" ！")[1:])
-        insert_novel_detail(novel_detail_title, novel_detail_body)
+    r = requests.get("https://www.xbiquge.cc/book/4772/" + url)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    novel_detail_title = soup.find('h1').get_text()
+    detail_body = soup.select("div#content")[0].get_text().replace("\xa0", "\n")
+    novel_detail_body = "".join(detail_body.split(" ！")[1:])
+    insert_novel_detail(novel_detail_title, novel_detail_body)
 
 def crawl(url):
     # log(text='start crawl')
     connect_db()
     urls = get_detail_urls(url)
-    save_detail(urls)
+    for url in urls:
+        save_detail(url)
 
 if __name__ == '__main__':
     crawl("https://www.xbiquge.cc/book/4772/")
